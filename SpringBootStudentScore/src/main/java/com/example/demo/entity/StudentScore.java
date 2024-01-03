@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,4 +32,9 @@ public class StudentScore {
 	//@Column(columnDefinition = "Double default 0")
 	private Double averageScore;
 	
+	// 更新總分與平均
+	public void updateTotalAndAverage() {
+		setTotalScore(chineseScore + englishScore + mathScore);
+		setAverageScore(totalScore / 3.0);
+	}
 }
