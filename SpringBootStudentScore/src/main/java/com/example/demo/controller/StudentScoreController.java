@@ -6,18 +6,22 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.entity.StudentScore;
 import com.example.demo.repository.StudentScoreRepository;
 import com.github.javafaker.Faker;
+
+import jakarta.transaction.Transactional;
 
 
 
@@ -36,7 +40,23 @@ public class StudentScoreController {
 				.sorted(Comparator.comparingInt(StudentScore::getTotalScore).reversed())
 				.collect(Collectors.toList());
 		
+		// 計算前 25% 的平均(高標)
+		int top25Count = (int)(sortedScores.size() * 0.25);
+		double top25AverageScore = sortedScores.stream()
+				.limit(top25Count)
+				.mapToDouble(StudentScore::getAverageScore)
+				.average()
+				.orElse(0.0);
+		
+		// 計算總平均(低標)
+		double averageScore = scores.stream()
+				.mapToDouble(StudentScore::getAverageScore)
+				.average()
+				.orElse(0.0);
+		
 		model.addAttribute("scores", sortedScores);
+		model.addAttribute("top25AverageScore", top25AverageScore);
+		model.addAttribute("averageScore", averageScore);
 		return "student_score";
 	}
 	
@@ -74,6 +94,27 @@ public class StudentScoreController {
 		studentScore.updateTotalAndAverage();
 		studentScoreRepository.save(studentScore);
 		return "Add OK: " + studentScore;
+	}
+	
+	
+	@PutMapping("/{id}")
+	@ResponseBody
+	public String update(@PathVariable("id") Integer id, StudentScore uptStudentScore) {
+		// 根據 id 找到該筆資料
+		Optional<StudentScore> studentScoreOpt = studentScoreRepository.findById(id);
+		if(studentScoreOpt.isPresent()) {
+			StudentScore studentScore = studentScoreOpt.get();
+			
+			// "id", "totalScore", "averageScore" 不要複製, 其餘都要複製
+			BeanUtils.copyProperties(uptStudentScore, studentScore, "id", "totalScore", "averageScore");
+			studentScore.updateTotalAndAverage();
+			// 修改更新
+			studentScoreRepository.saveAndFlush(studentScore);
+			
+			return "Update OK";
+		}
+		return "Update Fail";
+		
 	}
 	
 	
