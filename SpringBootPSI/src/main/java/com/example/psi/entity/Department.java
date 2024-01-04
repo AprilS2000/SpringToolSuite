@@ -1,10 +1,14 @@
 package com.example.psi.entity;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,4 +20,8 @@ public class Department {
 	
 	@Column
 	private String name; // 部門名稱
+	
+	@OneToMany(mappedBy = "department")
+	private Set<Employee> employees = new LinkedHashSet<>();
+	
 }
