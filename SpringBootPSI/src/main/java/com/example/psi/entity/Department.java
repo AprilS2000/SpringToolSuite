@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,6 +23,7 @@ public class Department {
 	private String name; // 部門名稱
 	
 	@OneToMany(mappedBy = "department")
+	@OrderBy("id ASC")
 	private Set<Employee> employees = new LinkedHashSet<>();
 	
 }
