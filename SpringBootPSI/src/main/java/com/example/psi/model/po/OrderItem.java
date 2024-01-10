@@ -1,4 +1,4 @@
-package com.example.psi.entity;
+package com.example.psi.model.po;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,22 +8,26 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
 
 @Entity
-@Table(name = "purchase_item")
-@Data
-public class PurchaseItem {
-	
+@Table(name = "order_item")
+public class OrderItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id; // 採購項目序號
+	private Long id; // 訂單細目序號
 	
 	@Column
-	private Integer amount; // 採購數量
+	private Integer amount; // 訂購數量
 	
-	@JoinColumn(name = "purchase_id")
+	@Column
+	private Integer price; // 商品售價
+
+	@JoinColumn(name = "order_id")
 	@ManyToOne
-	private Purchase purchase;
+	private Order order;
 	
+
+	@JoinColumn(name = "product_id")
+	@ManyToOne
+	private Product product;
 }

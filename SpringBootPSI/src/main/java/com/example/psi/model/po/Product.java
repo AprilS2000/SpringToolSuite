@@ -1,4 +1,4 @@
-package com.example.psi.entity;
+package com.example.psi.model.po;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -11,9 +11,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "product")
+@Getter
+@Setter
 public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +38,11 @@ public class Product {
 	
 	@OneToMany(mappedBy = "product")
 	@OrderBy("id ASC")
-	private Set<OrderItem> orderItems  = new LinkedHashSet<>();
+	private Set<OrderItem> orderItems = new LinkedHashSet<>();
+
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", name=" + name + ", cost=" + cost + ", price=" + price + "]";
+	}
 	
 }
