@@ -8,9 +8,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "order_item")
+@Getter
+@Setter
 public class OrderItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,13 +25,19 @@ public class OrderItem {
 	
 	@Column
 	private Integer price; // 商品售價
-
+	
 	@JoinColumn(name = "order_id")
 	@ManyToOne
 	private Order order;
 	
-
 	@JoinColumn(name = "product_id")
 	@ManyToOne
 	private Product product;
+
+	@Override
+	public String toString() {
+		return "OrderItem [id=" + id + ", amount=" + amount + ", price=" + price + ", order=" + order + ", product="
+				+ product + "]";
+	}
+	
 }

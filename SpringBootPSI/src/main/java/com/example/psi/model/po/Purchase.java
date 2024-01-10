@@ -18,9 +18,13 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "purchase")
+@Getter
+@Setter
 public class Purchase {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,16 +35,21 @@ public class Purchase {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date date; // 採購日期
 	
-	@JoinColumn(name = "supplier_id") // 供應商編號(外鍵)
+	@JoinColumn(name = "supplier_id") // 供應商序號(外鍵)
 	@ManyToOne
 	private Supplier supplier;
 	
-	@JoinColumn(name = "employee_id") // 員工編號(外鍵)
+	@JoinColumn(name = "employee_id") // 員工序號(外鍵)
 	@ManyToOne
 	private Employee employee;
 	
 	@OneToMany(mappedBy = "purchase")
 	@OrderBy("id ASC")
 	private Set<PurchaseItem> purchaseItems = new LinkedHashSet<>();
+
+	@Override
+	public String toString() {
+		return "Purchase [id=" + id + ", date=" + date + ", supplier=" + supplier + ", employee=" + employee + "]";
+	}
 	
 }
